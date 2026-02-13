@@ -1,638 +1,1165 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Love❤️</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Digicam Rental Organizer</title>
+  <style>
+    :root{
+      --bg:#0b1220;
+      --card:#0f1730;
+      --stroke:#24335e;
+      --text:#eaf0ff;
+      --muted:#a9b7e6;
+      --accent:#7aa2ff;
+      --good:#4ade80;
+      --warn:#fbbf24;
+      --bad:#fb7185;
+      --track:#0a1330;
+    }
+    *{box-sizing:border-box}
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+      color:var(--text);
+      background:
+        radial-gradient(1200px 800px at 10% 10%, #1a2a55 0%, transparent 60%),
+        radial-gradient(900px 600px at 90% 20%, #2a1f5a 0%, transparent 55%),
+        linear-gradient(180deg, #0f1b33, var(--bg));
+      min-height:100vh;
+    }
 
-<style>
-/* ===== Soft Romantic Red Background (default) ===== */
-body{
-  margin:0;
-  height:100vh;
-  overflow:hidden;
-  font-family: Arial, sans-serif;
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  position:relative;
+    /* Layout container */
+    .container{
+      max-width:1100px;
+      margin:0 auto;
+      padding:18px 16px 24px;
+    }
 
-  background:
-    radial-gradient(circle at 20% 15%, rgba(255,255,255,0.35), transparent 45%),
-    radial-gradient(circle at 80% 10%, rgba(255,255,255,0.22), transparent 42%),
-    radial-gradient(circle at 70% 85%, rgba(255,255,255,0.18), transparent 45%),
-    linear-gradient(135deg, #ff6b81, #ff8fa3, #ffb3c1, #ff758f);
-  background-size: 200% 200%;
-  animation: bgMove 14s ease infinite;
-}
+    /* Top bar / nav */
+    .topbar{
+      display:flex;
+      gap:12px;
+      align-items:center;
+      justify-content:space-between;
+      flex-wrap:wrap;
+      margin-bottom:14px;
+    }
+    .brand{
+      display:flex; gap:10px; align-items:center;
+    }
+    .brand h1{
+      margin:0;
+      font-size:clamp(20px, 2.2vw, 30px);
+      letter-spacing:.2px;
+    }
+    .brand p{
+      margin:4px 0 0;
+      color:var(--muted);
+      font-size:13px;
+      line-height:1.35;
+      max-width:72ch;
+    }
+    .nav{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+    }
+    .tab{
+      display:inline-flex;
+      align-items:center;
+      gap:8px;
+      padding:9px 12px;
+      border-radius:999px;
+      border:1px solid #2a3a6b;
+      background:#0f1730;
+      color:#dbe6ff;
+      text-decoration:none;
+      font-weight:800;
+      font-size:13px;
+      cursor:pointer;
+      user-select:none;
+    }
+    .tab.active{
+      border-color: transparent;
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      color:#071029;
+    }
+    .actions{
+      display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+    }
+    .pill{
+      display:inline-flex; align-items:center; gap:8px;
+      padding:8px 10px; border-radius:999px;
+      background:#0f1730; border:1px solid #2a3a6b;
+      color:var(--muted); font-size:12px;
+      white-space:nowrap;
+    }
 
-@keyframes bgMove{
-  0%{background-position:0% 50%}
-  50%{background-position:100% 50%}
-  100%{background-position:0% 50%}
-}
+    /* Cards */
+    .card{
+      background: rgba(18,28,51,.78);
+      border:1px solid var(--stroke);
+      border-radius:16px;
+      padding:14px;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 12px 30px rgba(0,0,0,.22);
+    }
+    .card h2{
+      margin:0 0 10px;
+      font-size:15px;
+      color:#dbe6ff;
+      letter-spacing:.2px;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .muted{color:var(--muted)}
+    .hide{display:none !important}
 
-body::before, body::after{
-  content:"";
-  position:fixed;
-  width:520px; height:520px;
-  border-radius:50%;
-  filter: blur(70px);
-  opacity:.26;
-  z-index:0;
-  pointer-events:none;
-}
-body::before{ background:#ff3b67; top:-160px; left:-180px; }
-body::after { background:#ffd1dc; bottom:-220px; right:-180px; }
+    /* Form */
+    label{display:block; font-size:12px; color:var(--muted); margin:10px 0 6px;}
+    input, select, textarea{
+      width:100%;
+      padding:10px 10px;
+      border-radius:12px;
+      border:1px solid #2a3a6b;
+      background:#0f1730;
+      color:var(--text);
+      outline:none;
+    }
+    input:focus, select:focus, textarea:focus{
+      border-color: var(--accent);
+      box-shadow: 0 0 0 3px rgba(122,162,255,.18);
+    }
+    textarea{min-height:64px; resize:vertical}
+    .row{display:grid; grid-template-columns:1fr 1fr; gap:10px;}
+    .row3{display:grid; grid-template-columns: 1fr 1fr 1fr; gap:10px;}
+    .btns{display:flex; gap:10px; margin-top:12px; flex-wrap:wrap;}
+    button{
+      border:1px solid #2a3a6b;
+      background:#12204a;
+      color:var(--text);
+      padding:10px 12px;
+      border-radius:12px;
+      cursor:pointer;
+      font-weight:900;
+    }
+    button:hover{filter:brightness(1.08)}
+    .primary{
+      background: linear-gradient(135deg, #3b82f6, #8b5cf6);
+      border-color: transparent;
+    }
+    .ghost{
+      background:transparent;
+      border-color:#2a3a6b;
+      color:#dbe6ff;
+    }
+    .danger{
+      background:#2a1220;
+      border-color:#4a2034;
+      color:#ffd5de;
+    }
 
-/* ===== Transparent background mode (on fail) ===== */
-body.transparent-bg{
-  background: transparent !important;
-  animation: none !important;
-}
-body.transparent-bg::before,
-body.transparent-bg::after{
-  display:none !important;
-}
+    /* Pages */
+    .page{display:none}
+    .page.active{display:block}
 
-/* ===== Floating hearts background ===== */
-.heart-background{
-  position:fixed;
-  inset:0;
-  overflow:hidden;
-  z-index:0;
-  pointer-events:none;
-}
+    /* Dashboard layout (desktop) */
+    .grid{
+      display:grid;
+      grid-template-columns: 380px 1fr;
+      gap:14px;
+      align-items:start;
+    }
 
-body.transparent-bg .heart-background{
-  display:none !important;
-}
+    /* Bookings controls */
+    .controls{
+      display:flex; gap:10px; flex-wrap:wrap; align-items:center; justify-content:space-between;
+      margin-bottom:10px;
+    }
+    .controls .left{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
+    .controls input, .controls select{
+      width:auto;
+      min-width: 180px;
+      padding:9px 10px;
+      border-radius:999px;
+    }
+    .stats{display:flex; gap:10px; flex-wrap:wrap; align-items:center;}
 
-.floating-heart{
-  position:absolute;
-  bottom:-60px;
-  font-size:34px;
-  animation: floatUp linear forwards;
-  opacity:0;
-  filter: drop-shadow(0 10px 18px rgba(255,0,80,0.25));
-}
+    /* Table (desktop/tablet landscape) */
+    .tableWrap{
+      overflow:auto;
+      max-height: 72vh;
+      border-radius:14px;
+    }
+    table{
+      width:100%;
+      border-collapse:separate;
+      border-spacing:0;
+      border-radius:14px;
+      border:1px solid var(--stroke);
+      background:#0f1730;
+      overflow:hidden;
+      min-width: 900px; /* lets smaller screens scroll horizontally */
+    }
+    thead th{
+      text-align:left;
+      font-size:12px;
+      color:#cfe0ff;
+      padding:10px 10px;
+      border-bottom:1px solid #22315b;
+      background: #0c1430;
+      position:sticky; top:0; z-index:1;
+      white-space:nowrap;
+    }
+    tbody td{
+      padding:10px 10px;
+      border-bottom:1px solid #18244a;
+      font-size:13px;
+      vertical-align:top;
+    }
+    tbody tr:hover{background:#0e1b3a}
+    .nowrap{white-space:nowrap}
+    .tag{
+      display:inline-flex; align-items:center;
+      padding:4px 8px; border-radius:999px; font-size:12px;
+      border:1px solid #2a3a6b;
+      color:#d7e5ff; background:#0a1230;
+      white-space:nowrap;
+    }
+    .tag.good{border-color: rgba(74,222,128,.35); color:#d5ffe2}
+    .tag.warn{border-color: rgba(251,191,36,.35); color:#fff1c7}
+    .tag.bad{border-color: rgba(251,113,133,.35); color:#ffd2db}
 
-@keyframes floatUp{
-  0%{ transform: translateY(0) scale(0.8) rotate(0deg); opacity:0; }
-  12%{ opacity:0.95; }
-  100%{ transform: translateY(-115vh) scale(1.55) rotate(360deg); opacity:0; }
-}
+    /* Monitor bar */
+    .barWrap{display:flex; flex-direction:column; gap:6px; min-width:240px;}
+    .barTop{
+      display:flex; gap:8px; align-items:center; justify-content:space-between;
+      font-size:12px; color:var(--muted);
+    }
+    .barTrack{
+      position:relative; height:10px; width:100%;
+      border-radius:999px; background: var(--track);
+      border:1px solid #22315b; overflow:hidden;
+    }
+    .barFill{
+      position:absolute; inset:0 auto 0 0; width:0%;
+      border-radius:999px;
+      background: linear-gradient(90deg, #3b82f6, #8b5cf6);
+    }
+    .barMarkers{display:flex; justify-content:space-between; font-size:11px; color:var(--muted);}
+    .barNote{font-size:11px; color:var(--muted);}
 
-/* ===== Main Container ===== */
-.container{
-  width:900px;
-  height:540px;
-  background: rgba(255,255,255,0.92);
-  border-radius:26px;
-  box-shadow:0 24px 70px rgba(0,0,0,0.25);
-  position:relative;
-  overflow:hidden;
-  z-index:2;
-}
+    .miniBtns{display:flex; gap:8px; flex-wrap:wrap;}
+    .miniBtns button{padding:7px 10px; border-radius:10px; font-size:12px; font-weight:900;}
 
-h1{
-  text-align:center;
-  color:#ff124d;
-  margin:16px 0 6px;
-}
+    /* Mobile card list (Bookings page) */
+    .cardsList{
+      display:none;
+      gap:10px;
+      flex-direction:column;
+    }
+    .bookingCard{
+      background:#0f1730;
+      border:1px solid var(--stroke);
+      border-radius:14px;
+      padding:12px;
+    }
+    .bookingCardTop{
+      display:flex;
+      align-items:flex-start;
+      justify-content:space-between;
+      gap:10px;
+    }
+    .bookingCardTop .title{
+      font-weight:900;
+      letter-spacing:.2px;
+    }
+    .bookingCardTop .sub{
+      color:var(--muted);
+      font-size:12px;
+      margin-top:2px;
+      line-height:1.3;
+    }
+    .kv{
+      display:grid;
+      grid-template-columns: 1fr 1fr;
+      gap:8px 10px;
+      margin:10px 0 8px;
+      color:var(--muted);
+      font-size:12px;
+    }
+    .kv b{color:var(--text); font-weight:800}
+    .inlineRow{
+      display:flex;
+      gap:8px;
+      align-items:center;
+      flex-wrap:wrap;
+      margin-top:10px;
+    }
 
-.subtitle{
-  text-align:center;
-  margin:0 0 10px;
-  color:#444;
-  font-size:14px;
-}
+    /* Toast */
+    .toast{
+      position:fixed;
+      left:50%;
+      bottom:18px;
+      transform:translateX(-50%);
+      background:#0f1730;
+      border:1px solid #2a3a6b;
+      color:#dbe6ff;
+      padding:10px 12px;
+      border-radius:999px;
+      font-size:13px;
+      opacity:0;
+      pointer-events:none;
+      transition:opacity .18s ease, transform .18s ease;
+      box-shadow: 0 10px 26px rgba(0,0,0,.25);
+    }
+    .toast.show{
+      opacity:1;
+      transform:translateX(-50%) translateY(-6px);
+    }
 
-.arena{
-  position:relative;
-  width:100%;
-  height:440px;
-  background: linear-gradient(180deg, #ffffff, #ffe3ea);
-  border-top: 1px solid rgba(0,0,0,0.06);
-}
+    .footer{
+      margin-top:14px;
+      color:var(--muted);
+      font-size:12px;
+    }
 
-/* HUD */
-.stats{
-  position:absolute;
-  top:12px; left:18px;
-  font-weight:bold;
-  color:#2b2b2b;
-  z-index:2;
-}
-.timer{
-  position:absolute;
-  top:12px; right:18px;
-  font-weight:bold;
-  color:#2b2b2b;
-  z-index:2;
-}
+    /* =========================
+       RESPONSIVE: Mobile / iPad
+       ========================= */
 
-/* Player + hearts */
-.player{
-  position:absolute;
-  font-size:42px;
-  transform:translate(-50%,-50%);
-  left:50%;
-  top:70%;
-  z-index:2;
-}
-.heart{
-  position:absolute;
-  font-size:30px;
-  transform:translate(-50%,-50%);
-  z-index:1;
-}
+    /* iPad portrait and below */
+    @media (max-width: 900px){
+      .grid{grid-template-columns: 1fr;}
+      .controls input, .controls select{min-width: 160px;}
+    }
 
-/* Buttons */
-button{
-  padding:10px 18px;
-  border:none;
-  border-radius:12px;
-  cursor:pointer;
-  font-weight:bold;
-}
-#yesBtn{
-  position:absolute;
-  bottom:18px;
-  left:35%;
-  background:#ff124d;
-  color:white;
-  opacity:.55;
-  cursor:not-allowed;
-  z-index:2;
-}
-#yesBtn.unlocked{
-  opacity:1;
-  cursor:pointer;
-}
-#noBtn{
-  position:absolute;
-  bottom:18px;
-  right:35%;
-  background:#1b1b1b;
-  color:white;
-  z-index:2;
-}
-
-/* ===== Start Instructions Overlay ===== */
-.start-overlay{
-  position:absolute;
-  inset:0;
-  background: rgba(0,0,0,0.55);
-  display:flex;
-  justify-content:center;
-  align-items:center;
-  z-index:10;
-  padding:18px;
-}
-
-.start-card{
-  width:min(640px, 94vw);
-  background:white;
-  border-radius:22px;
-  padding:22px 18px;
-  text-align:center;
-  box-shadow:0 22px 60px rgba(0,0,0,0.35);
-}
-
-.start-card h2{
-  margin:0;
-  color:#ff124d;
-  font-size:26px;
-}
-
-.start-card p{
-  margin:8px 0 0;
-  color:#444;
-  line-height:1.4;
-}
-
-.steps{
-  text-align:left;
-  margin:14px auto 0;
-  background:#fff3f6;
-  border:1px solid rgba(255,18,77,0.18);
-  padding:14px 14px;
-  border-radius:16px;
-  max-width:540px;
-  color:#333;
-  line-height:1.55;
-}
-.steps b{ color:#ff124d; }
-
-.start-btn{
-  margin-top:14px;
-  background:#ff124d;
-  color:white;
-  padding:12px 20px;
-  border-radius:14px;
-  font-size:15px;
-}
-
-.small-note{
-  margin-top:10px;
-  font-size:12px;
-  color:#666;
-}
-
-/* ===== Letter modal ===== */
-.modal{
-  position:absolute;
-  inset:0;
-  background:rgba(0,0,0,0.62);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:20;
-  padding:18px;
-}
-.modal.show{ display:flex; }
-
-.card{
-  background:white;
-  padding:26px;
-  width:70%;
-  max-height:80%;
-  overflow:auto;
-  border-radius:20px;
-  text-align:left;
-  white-space:pre-line;
-  animation:fadeIn 0.9s ease;
-}
-@keyframes fadeIn{
-  from{opacity:0; transform:scale(.86);}
-  to{opacity:1; transform:scale(1);}
-}
-
-/* ===== Time-up Overlay (with Restart) ===== */
-.timeout-overlay{
-  position:absolute;
-  inset:0;
-  background: rgba(0,0,0,0.62);
-  display:none;
-  justify-content:center;
-  align-items:center;
-  z-index:30;
-  padding:18px;
-}
-.timeout-overlay.show{ display:flex; }
-
-.timeout-card{
-  width:min(560px, 92vw);
-  background:white;
-  border-radius:22px;
-  padding:22px 18px;
-  text-align:center;
-  box-shadow:0 22px 60px rgba(0,0,0,0.35);
-}
-.timeout-card h2{
-  margin:0;
-  color:#ff124d;
-  font-size:24px;
-}
-.timeout-card p{
-  margin:8px 0 0;
-  color:#444;
-}
-.retry-btn{
-  margin-top:14px;
-  background:#ff124d;
-  color:white;
-  padding:12px 20px;
-  border-radius:14px;
-  font-size:15px;
-}
-
-/* ===== Fireworks particles (YES pressed) ===== */
-.particle{
-  position:fixed;
-  left:0; top:0;
-  transform: translate(-50%, -50%);
-  will-change: transform, opacity;
-  pointer-events:none;
-  z-index:9999;
-  filter: drop-shadow(0 10px 18px rgba(0,0,0,0.18));
-  animation: burst var(--dur) ease-out forwards;
-  opacity:1;
-}
-
-@keyframes burst{
-  0%   { transform: translate(var(--x0), var(--y0)) scale(0.9); opacity:1; }
-  70%  { opacity:1; }
-  100% { transform: translate(var(--x1), var(--y1)) scale(1.25); opacity:0; }
-}
-</style>
+    /* Mobile */
+    @media (max-width: 600px){
+      .brand{width:100%}
+      .brand p{max-width:100%}
+      .actions{width:100%; justify-content:flex-start}
+      .controls .left{width:100%}
+      .controls input, .controls select{
+        min-width: 0;
+        width:100%;
+      }
+      .row, .row3{grid-template-columns: 1fr;}
+      .tableWrap{display:none;}
+      .cardsList{display:flex;}
+    }
+  </style>
 </head>
-
 <body>
-<div class="heart-background"></div>
+  <div class="container">
+    <!-- TOP BAR -->
+    <div class="topbar">
+      <div class="brand">
+        <div>
+          <h1>📸 Digicam Rental Organizer</h1>
+          <p>
+            Simple real-world setup: <b>Dashboard</b> to add/edit bookings, <b>Bookings</b> to monitor rentals.
+            Autosaves on this device.
+          </p>
+        </div>
+      </div>
 
-<div class="container">
-  <h1>Catch 3 Hearts💘</h1>
-  <p class="subtitle">A tiny game for my favorite person ❤️</p>
+      <div class="nav" role="navigation" aria-label="Pages">
+        <a class="tab" id="tabDashboard" href="#/dashboard">Dashboard</a>
+        <a class="tab" id="tabBookings" href="#/bookings">Bookings</a>
+      </div>
 
-  <div class="arena" id="arena">
-    <div class="stats">Hearts: <span id="score">0</span>/3</div>
-    <div class="timer">Time: <span id="time">20</span>s</div>
+      <div class="actions">
+        <span class="pill">Autosave: On</span>
+        <button class="ghost" id="exportBtn" type="button">Export CSV</button>
+        <button class="ghost" id="importBtn" type="button">Import CSV</button>
+        <input id="importFile" type="file" accept=".csv" style="display:none"/>
+      </div>
+    </div>
 
-    <div class="player" id="player">🧸</div>
+    <!-- PAGES -->
+    <section class="page" id="pageDashboard" aria-label="Dashboard page">
+      <div class="grid">
+        <!-- FORM -->
+        <div class="card">
+          <h2>
+            <span id="formTitle">New Booking</span>
+            <span class="muted" style="font-size:12px" id="endsAtInline">Ends: —</span>
+          </h2>
 
-    <button id="yesBtn">YES 💖</button>
-    <button id="noBtn">NO 💔</button>
+          <div class="row">
+            <div>
+              <label for="client">Client Name *</label>
+              <input id="client" placeholder="e.g., Maria Cruz" autocomplete="name" />
+            </div>
+            <div>
+              <label for="contact">Contact (optional)</label>
+              <input id="contact" placeholder="e.g., 09XXXXXXXXX" autocomplete="tel" />
+            </div>
+          </div>
 
-    <!-- Start instructions overlay -->
-    <div class="start-overlay" id="startOverlay">
-      <div class="start-card">
-        <h2>Hi my love 💞</h2>
-        <p>I made this little game just for you… because you’re my favorite person 🥺</p>
+          <label for="unit">Camera Unit *</label>
+          <input id="unit" placeholder="e.g., Canon G7X / Sony ZV-1" />
 
-        <div class="steps">
-          <div><b>1.</b> Move the teddy 🧸 with your mouse (or finger).</div>
-          <div><b>2.</b> Catch <b>3 hearts 💗</b> to continue.</div>
-          <div><b>3.</b> The <b>NO</b> button is shy…😏</div>
+          <div class="row3">
+            <div>
+              <label for="startDate">Start Date *</label>
+              <input id="startDate" type="date" />
+            </div>
+            <div>
+              <label for="startTime">Start Time *</label>
+              <input id="startTime" type="time" />
+            </div>
+            <div>
+              <label for="hours">Hours *</label>
+              <input id="hours" type="number" min="0.5" step="0.5" placeholder="e.g., 6" />
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="status">Status</label>
+              <select id="status">
+                <option value="Reserved">Reserved</option>
+                <option value="Ongoing">Ongoing</option>
+                <option value="Returned">Returned</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+            <div>
+              <label for="payment">Payment</label>
+              <select id="payment">
+                <option value="Unpaid">Unpaid</option>
+                <option value="Downpayment">Downpayment</option>
+                <option value="Paid">Paid</option>
+                <option value="Refunded">Refunded</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="row">
+            <div>
+              <label for="price">Price (optional)</label>
+              <input id="price" type="number" min="0" step="1" placeholder="e.g., 800" />
+            </div>
+            <div>
+              <label for="bookingId">Booking ID</label>
+              <input id="bookingId" placeholder="Auto-generated" />
+            </div>
+          </div>
+
+          <label for="notes">Notes (optional)</label>
+          <textarea id="notes" placeholder="e.g., Includes extra battery, meetup at SM."></textarea>
+
+          <div class="btns">
+            <button class="primary" id="saveBtn" type="button">Save</button>
+            <button class="ghost" id="resetBtn" type="button">New</button>
+            <button class="danger" id="clearAllBtn" type="button" title="Deletes all bookings">Clear All</button>
+          </div>
+
+          <div class="footer">
+            Tip: You can add bookings here, then go to <b>Bookings</b> to monitor them.
+          </div>
         </div>
 
-        <button class="start-btn" id="startBtn">Start 💘</button>
-        <div class="small-note">Good luck, baby. I’m cheering for you ❤️</div>
-      </div>
-    </div>
+        <!-- QUICK PREVIEW (simple) -->
+        <div class="card">
+          <h2>
+            <span>Quick Overview</span>
+            <span class="muted" style="font-size:12px" id="nowClock">—</span>
+          </h2>
 
-    <!-- Letter modal -->
-    <div class="modal" id="modal">
-      <div class="card" id="message"></div>
-    </div>
+          <div id="overviewStats" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;"></div>
 
-    <!-- Time up overlay -->
-    <div class="timeout-overlay" id="timeoutOverlay">
-      <div class="timeout-card">
-        <h2>Uh oh… time is up 😭</h2>
-        <p>Try again, love? 💗</p>
-        <button class="retry-btn" id="restartBtn">Restart 💘</button>
+          <div class="footer" style="margin-top:10px;">
+            This is a lightweight app (single HTML file). Works on mobile, iPad, and desktop.
+          </div>
+        </div>
       </div>
-    </div>
+    </section>
+
+    <section class="page" id="pageBookings" aria-label="Bookings page">
+      <div class="card">
+        <h2>
+          <span>Bookings</span>
+          <span class="muted" style="font-size:12px">Monitor bars are here ✅</span>
+        </h2>
+
+        <div class="controls">
+          <div class="left">
+            <input id="search" placeholder="Search name / unit / ID..." />
+            <select id="filterStatus">
+              <option value="All">All Status</option>
+              <option value="Reserved">Reserved</option>
+              <option value="Ongoing">Ongoing</option>
+              <option value="Returned">Returned</option>
+              <option value="Cancelled">Cancelled</option>
+            </select>
+            <select id="sortBy">
+              <option value="endAsc">Sort: End ↑</option>
+              <option value="endDesc">Sort: End ↓</option>
+              <option value="startAsc">Sort: Start ↑</option>
+              <option value="startDesc">Sort: Start ↓</option>
+            </select>
+          </div>
+          <div class="stats" id="stats"></div>
+        </div>
+
+        <!-- Desktop/tablet table -->
+        <div class="tableWrap">
+          <table>
+            <thead>
+              <tr>
+                <th>Booking</th>
+                <th>Client</th>
+                <th>Unit</th>
+                <th>Start</th>
+                <th>End</th>
+                <th>Monitor</th>
+                <th>Status</th>
+                <th>Payment</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="tbody"></tbody>
+          </table>
+        </div>
+
+        <!-- Mobile card list -->
+        <div class="cardsList" id="cardsList"></div>
+
+        <div class="footer">
+          Data is saved in your browser storage. Export CSV for backup/moving devices.
+        </div>
+      </div>
+    </section>
   </div>
-</div>
 
-<script>
-/* ===== Your Letter (word for word) ===== */
-const MESSAGE = `Hi my lovee!
-it's been a long time since I've made you a letter, now here it is hehe. I just want to let you know that this past couple months has been happy and sad at the same time, happy is because you still keep on loving me, sad that I can not yet spoil you till you get sick of it heheheh. I know that we sometimes argue over little or big things and maybe most of it is because of me hehe, but underneath all that arguments, fights, and sadness that we felt, we still care deeply about each other and we would always find a way to fix it. I am grateful that I met and love the woman that you are inside and out. di na kayo nako taason hehe, Will you be my Valentines? (even if wala tay date nga garbo and igo rata magkita and bonding) hehe
-- Dre`;
+  <div class="toast" id="toast">Saved ✅</div>
 
-const TARGET = 3;
-const START_TIME = 20;
+  <script>
+    // =========================
+    // Simple SPA pages: #/dashboard, #/bookings
+    // Responsive: desktop/iPad/mobile
+    // Monitor bars live on Bookings page
+    // =========================
 
-const arena = document.getElementById("arena");
-const player = document.getElementById("player");
-const yesBtn = document.getElementById("yesBtn");
-const noBtn = document.getElementById("noBtn");
-const scoreEl = document.getElementById("score");
-const timeEl = document.getElementById("time");
-const modal = document.getElementById("modal");
-const message = document.getElementById("message");
-const heartBg = document.querySelector(".heart-background");
+    const $ = (id) => document.getElementById(id);
+    const KEY = "digicam_rental_app_pages_v1";
+    const DRAFT_KEY = KEY + "_draft";
 
-const startOverlay = document.getElementById("startOverlay");
-const startBtn = document.getElementById("startBtn");
+    const state = {
+      bookings: [],
+      editingId: null
+    };
 
-const timeoutOverlay = document.getElementById("timeoutOverlay");
-const restartBtn = document.getElementById("restartBtn");
+    // ---- helpers
+    const pad2 = (n) => String(n).padStart(2,"0");
+    const clamp = (n,min,max) => Math.max(min, Math.min(max,n));
 
-message.innerText = MESSAGE;
+    function formatDT(dateISO){
+      const d = new Date(dateISO);
+      if(isNaN(d)) return "—";
+      const datePart = d.toLocaleDateString(undefined, { year:"numeric", month:"short", day:"2-digit" });
+      let h = d.getHours();
+      const m = pad2(d.getMinutes());
+      const ampm = h >= 12 ? "PM" : "AM";
+      h = h % 12; if(h===0) h = 12;
+      return `${datePart} ${h}:${m} ${ampm}`;
+    }
+    function formatTimeOnly(date){
+      const d = new Date(date);
+      if(isNaN(d)) return "—";
+      let h = d.getHours();
+      const m = pad2(d.getMinutes());
+      const ampm = h >= 12 ? "PM" : "AM";
+      h = h % 12; if(h===0) h = 12;
+      return `${h}:${m} ${ampm}`;
+    }
+    function escapeHtml(str){
+      return String(str ?? "")
+        .replaceAll("&","&amp;")
+        .replaceAll("<","&lt;")
+        .replaceAll(">","&gt;")
+        .replaceAll('"',"&quot;")
+        .replaceAll("'","&#039;");
+    }
+    function makeId(){
+      return "B" + Math.random().toString(16).slice(2,6).toUpperCase() + "-" + Date.now().toString().slice(-4);
+    }
 
-let score = 0;
-let time = START_TIME;
-let unlocked = false;
-let gameStarted = false;
-let noDodgeEnabled = true;
+    function computeStartEnd(startDate, startTime, hours){
+      if(!startDate || !startTime || hours === "" || hours === null) return null;
+      const h = Number(hours);
+      if(!isFinite(h) || h <= 0) return null;
+      const [hh, mm] = startTime.split(":").map(Number);
+      const start = new Date(startDate);
+      if(isNaN(start)) return null;
+      start.setHours(hh || 0, mm || 0, 0, 0);
+      const end = new Date(start.getTime() + h * 3600 * 1000);
+      return { startISO: start.toISOString(), endISO: end.toISOString() };
+    }
 
-let spawnInterval = null;
-let timerInterval = null;
+    function statusTagClass(status){
+      if(status === "Returned") return "good";
+      if(status === "Ongoing") return "warn";
+      if(status === "Cancelled") return "bad";
+      return "";
+    }
 
-/* ===== Move Player ===== */
-function movePlayer(clientX, clientY){
-  const rect = arena.getBoundingClientRect();
-  const x = Math.max(18, Math.min(rect.width - 18, clientX - rect.left));
-  const y = Math.max(70, Math.min(rect.height - 18, clientY - rect.top));
-  player.style.left = x + "px";
-  player.style.top = y + "px";
-}
+    function monitorInfo(startISO, endISO){
+      const start = new Date(startISO);
+      const end = new Date(endISO);
+      const now = new Date();
+      if(isNaN(start) || isNaN(end) || end <= start){
+        return { pct: 0, range: "—", nowLabel: "Now: —", note: "" };
+      }
+      const total = end - start;
+      const elapsed = now - start;
+      const pct = clamp((elapsed/total)*100, 0, 100);
 
-arena.addEventListener("mousemove", e=>{
-  if(!gameStarted) return;
-  movePlayer(e.clientX, e.clientY);
-});
+      let note = "";
+      if(now < start) note = "Not started yet";
+      else if(now >= end) note = "Ended";
+      else {
+        const minsLeft = Math.ceil((end - now) / (1000*60));
+        note = `${minsLeft} min left`;
+      }
+      return {
+        pct,
+        range: `${formatTimeOnly(start)} → ${formatTimeOnly(end)}`,
+        nowLabel: `Now: ${formatTimeOnly(now)}`,
+        note
+      };
+    }
 
-arena.addEventListener("touchstart", e=>{
-  if(!gameStarted) return;
-  const t = e.touches[0];
-  movePlayer(t.clientX, t.clientY);
-},{passive:true});
+    function showToast(msg){
+      const t = $("toast");
+      t.textContent = msg;
+      t.classList.add("show");
+      clearTimeout(showToast._timer);
+      showToast._timer = setTimeout(() => t.classList.remove("show"), 1200);
+    }
 
-arena.addEventListener("touchmove", e=>{
-  if(!gameStarted) return;
-  const t = e.touches[0];
-  movePlayer(t.clientX, t.clientY);
-},{passive:true});
-
-/* ===== Spawn Game Hearts ===== */
-function spawnHeart(){
-  if(!gameStarted) return;
-
-  const heart = document.createElement("div");
-  heart.className = "heart";
-  heart.innerText = "💗";
-
-  const x = 30 + Math.random() * (arena.clientWidth - 60);
-  const y = 90 + Math.random() * (arena.clientHeight - 150);
-
-  heart.style.left = x + "px";
-  heart.style.top = y + "px";
-  arena.appendChild(heart);
-
-  setTimeout(()=> heart.remove(), 2000);
-
-  const check = setInterval(()=>{
-    if(!heart.isConnected){ clearInterval(check); return; }
-
-    const p = player.getBoundingClientRect();
-    const h = heart.getBoundingClientRect();
-
-    if(Math.abs(p.left - h.left) < 40 && Math.abs(p.top - h.top) < 40){
-      score++;
-      scoreEl.innerText = score;
-      heart.remove();
-      clearInterval(check);
-
-      if(score >= TARGET){
-        unlocked = true;
-        yesBtn.classList.add("unlocked");
+    // ---- persistence
+    function load(){
+      try{
+        const raw = localStorage.getItem(KEY);
+        state.bookings = raw ? JSON.parse(raw) : [];
+      }catch{
+        state.bookings = [];
       }
     }
-  }, 50);
-}
-
-/* ===== Timer ===== */
-function startTimer(){
-  timerInterval = setInterval(()=>{
-    if(!gameStarted) return;
-    time--;
-    timeEl.innerText = time;
-
-    if(time <= 0){
-      onTimeUp();
+    function persist(){
+      localStorage.setItem(KEY, JSON.stringify(state.bookings));
+      showToast("Saved ✅");
     }
-  }, 1000);
-}
 
-/* ===== When time is up ===== */
-function onTimeUp(){
-  // stop game completely
-  gameStarted = false;
-  clearInterval(spawnInterval);
-  clearInterval(timerInterval);
+    // ---- form elements
+    const client = $("client");
+    const contact = $("contact");
+    const unit = $("unit");
+    const startDate = $("startDate");
+    const startTime = $("startTime");
+    const hours = $("hours");
+    const status = $("status");
+    const payment = $("payment");
+    const price = $("price");
+    const bookingId = $("bookingId");
+    const notes = $("notes");
 
-  // freeze NO button
-  noDodgeEnabled = false;
+    function setNowDefaults(){
+      const now = new Date();
+      startDate.value = now.toISOString().slice(0,10);
+      startTime.value = pad2(now.getHours()) + ":" + pad2(now.getMinutes());
+    }
+    function updateEndsInline(){
+      const res = computeStartEnd(startDate.value, startTime.value, hours.value);
+      $("endsAtInline").textContent = "Ends: " + (res ? formatDT(res.endISO) : "—");
+    }
 
-  // if score not enough: show message and transparent bg
-  if(score < TARGET){
-    document.body.classList.add("transparent-bg");
-    modal.classList.add("show");
-  }
+    function resetForm(){
+      state.editingId = null;
+      $("formTitle").textContent = "New Booking";
+      $("saveBtn").textContent = "Save";
 
-  // show restart overlay (no auto reload)
-  timeoutOverlay.classList.add("show");
-}
+      client.value = "";
+      contact.value = "";
+      unit.value = "";
+      hours.value = "";
+      status.value = "Reserved";
+      payment.value = "Unpaid";
+      price.value = "";
+      bookingId.value = "";
+      notes.value = "";
+      setNowDefaults();
+      updateEndsInline();
+      client.focus();
+      saveDraft();
+    }
 
-/* ===== NO Button Dodge ===== */
-function dodgeNo(){
-  if(!gameStarted) return;
-  if(!noDodgeEnabled) return;
+    function validate(){
+      if(!client.value.trim()) return "Client name is required.";
+      if(!unit.value.trim()) return "Camera unit is required.";
+      const res = computeStartEnd(startDate.value, startTime.value, hours.value);
+      if(!res) return "Start date, start time, and hours are required.";
+      return null;
+    }
 
-  noBtn.style.left = (Math.random() * (arena.clientWidth - 120)) + "px";
-  noBtn.style.bottom = (Math.random() * 220) + "px";
-}
-noBtn.addEventListener("mouseover", dodgeNo);
-noBtn.addEventListener("click", dodgeNo);
+    function upsertBooking(){
+      const err = validate();
+      if(err){ alert(err); return; }
 
-/* ===== YES Button ===== */
-yesBtn.addEventListener("click", ()=>{
-  if(!unlocked) return;
+      const res = computeStartEnd(startDate.value, startTime.value, hours.value);
 
-  // stop game completely so there's NO time limit while reading
-  gameStarted = false;
-  clearInterval(spawnInterval);
-  clearInterval(timerInterval);
-  noDodgeEnabled = false;
+      const item = {
+        id: state.editingId || (crypto.randomUUID?.() || (Date.now()+"_"+Math.random())),
+        bookingId: bookingId.value.trim() || makeId(),
+        client: client.value.trim(),
+        contact: contact.value.trim(),
+        unit: unit.value.trim(),
+        startISO: res.startISO,
+        endISO: res.endISO,
+        hours: Number(hours.value),
+        status: status.value,
+        payment: payment.value,
+        price: price.value ? Number(price.value) : null,
+        notes: notes.value.trim(),
+        updatedAtISO: new Date().toISOString()
+      };
 
-  modal.classList.add("show");
+      if(state.editingId){
+        state.bookings = state.bookings.map(b => b.id === state.editingId ? item : b);
+      } else {
+        state.bookings.push(item);
+      }
 
-  // Fireworks with hearts + sparkles
-  for(let i=0;i<6;i++){
-    setTimeout(()=> fireworksBurst(), i*220);
-  }
-});
+      persist();
+      renderAll();
+      resetForm();
+      // take user to bookings to monitor (less hassle)
+      location.hash = "#/bookings";
+    }
 
-/* Fireworks burst function */
-function fireworksBurst(){
-  const centerX = Math.random() * (window.innerWidth * 0.6) + (window.innerWidth * 0.2);
-  const centerY = Math.random() * (window.innerHeight * 0.35) + (window.innerHeight * 0.18);
+    // ---- draft autosave (prevents losing form on refresh)
+    function saveDraft(){
+      const draft = {
+        client: client.value,
+        contact: contact.value,
+        unit: unit.value,
+        startDate: startDate.value,
+        startTime: startTime.value,
+        hours: hours.value,
+        status: status.value,
+        payment: payment.value,
+        price: price.value,
+        bookingId: bookingId.value,
+        notes: notes.value
+      };
+      localStorage.setItem(DRAFT_KEY, JSON.stringify(draft));
+    }
+    function loadDraft(){
+      try{
+        const raw = localStorage.getItem(DRAFT_KEY);
+        if(!raw) return;
+        const d = JSON.parse(raw);
+        // only load if user isn't editing an existing one
+        if(!state.editingId){
+          client.value = d.client || "";
+          contact.value = d.contact || "";
+          unit.value = d.unit || "";
+          startDate.value = d.startDate || startDate.value;
+          startTime.value = d.startTime || startTime.value;
+          hours.value = d.hours || "";
+          status.value = d.status || "Reserved";
+          payment.value = d.payment || "Unpaid";
+          price.value = d.price || "";
+          bookingId.value = d.bookingId || "";
+          notes.value = d.notes || "";
+          updateEndsInline();
+        }
+      }catch{}
+    }
 
-  const particles = 46;
-  for(let i=0; i<particles; i++){
-    const p = document.createElement("div");
-    p.className = "particle";
-    p.innerText = Math.random() < 0.7 ? "💖" : "✨";
+    // ---- list view filters
+    function setStats(){
+      const total = state.bookings.length;
+      const ongoing = state.bookings.filter(b => b.status === "Ongoing").length;
+      const reserved = state.bookings.filter(b => b.status === "Reserved").length;
+      const returned = state.bookings.filter(b => b.status === "Returned").length;
 
-    const angle = (Math.PI * 2) * (i / particles);
-    const power = 90 + Math.random() * 170;
-    const x1 = centerX + Math.cos(angle) * power;
-    const y1 = centerY + Math.sin(angle) * power;
+      $("stats").innerHTML = `
+        <span class="pill">Total: <b style="color:var(--text)">${total}</b></span>
+        <span class="pill">Reserved: <b style="color:var(--text)">${reserved}</b></span>
+        <span class="pill">Ongoing: <b style="color:var(--text)">${ongoing}</b></span>
+        <span class="pill">Returned: <b style="color:var(--text)">${returned}</b></span>
+      `;
+      $("overviewStats").innerHTML = $("stats").innerHTML;
+    }
 
-    p.style.setProperty("--x0", centerX + "px");
-    p.style.setProperty("--y0", centerY + "px");
-    p.style.setProperty("--x1", x1 + "px");
-    p.style.setProperty("--y1", y1 + "px");
-    p.style.setProperty("--dur", (900 + Math.random()*700) + "ms");
+    function getView(){
+      const q = $("search").value.trim().toLowerCase();
+      const f = $("filterStatus").value;
+      const sortBy = $("sortBy").value;
 
-    p.style.fontSize = (16 + Math.random()*18) + "px";
-    document.body.appendChild(p);
-    setTimeout(()=> p.remove(), 1700);
-  }
-}
+      let list = [...state.bookings];
 
-/* Close modal when clicking outside */
-modal.addEventListener("click", (e)=>{
-  if(e.target === modal) modal.classList.remove("show");
-});
+      if(f !== "All") list = list.filter(b => b.status === f);
 
-/* ===== Start / Restart ===== */
-function resetGame(){
-  // restore background + overlays
-  document.body.classList.remove("transparent-bg");
-  modal.classList.remove("show");
-  timeoutOverlay.classList.remove("show");
+      if(q){
+        list = list.filter(b =>
+          (b.client||"").toLowerCase().includes(q) ||
+          (b.unit||"").toLowerCase().includes(q) ||
+          (b.bookingId||"").toLowerCase().includes(q) ||
+          (b.contact||"").toLowerCase().includes(q)
+        );
+      }
 
-  // remove leftover hearts in arena
-  arena.querySelectorAll(".heart").forEach(h => h.remove());
+      const sorters = {
+        endAsc:    (a,b) => (a.endISO||"").localeCompare(b.endISO||""),
+        endDesc:   (a,b) => (b.endISO||"").localeCompare(a.endISO||""),
+        startAsc:  (a,b) => (a.startISO||"").localeCompare(b.startISO||""),
+        startDesc: (a,b) => (b.startISO||"").localeCompare(a.startISO||""),
+      };
+      list.sort(sorters[sortBy] || sorters.endAsc);
+      return list;
+    }
 
-  // reset state
-  score = 0;
-  time = START_TIME;
-  unlocked = false;
-  noDodgeEnabled = true;
+    function renderBookings(){
+      setStats();
+      const list = getView();
 
-  scoreEl.innerText = "0";
-  timeEl.innerText = String(START_TIME);
-  yesBtn.classList.remove("unlocked");
+      // Desktop/tablet table
+      const tbody = $("tbody");
+      tbody.innerHTML = "";
 
-  // place player
-  const rect = arena.getBoundingClientRect();
-  movePlayer(rect.left + rect.width/2, rect.top + rect.height*0.7);
+      // Mobile cards
+      const cards = $("cardsList");
+      cards.innerHTML = "";
 
-  // start loops
-  gameStarted = true;
-  spawnInterval = setInterval(spawnHeart, 700);
-  startTimer();
-}
+      if(list.length === 0){
+        const tr = document.createElement("tr");
+        tr.innerHTML = `<td colspan="9" style="color:var(--muted); padding:16px;">No bookings yet.</td>`;
+        tbody.appendChild(tr);
 
-startBtn.addEventListener("click", ()=>{
-  startOverlay.style.display = "none";
-  resetGame();
-});
+        const empty = document.createElement("div");
+        empty.className = "bookingCard";
+        empty.innerHTML = `<div class="muted">No bookings yet. Add one in Dashboard.</div>`;
+        cards.appendChild(empty);
+        return;
+      }
 
-restartBtn.addEventListener("click", ()=>{
-  resetGame();
-});
+      for(const b of list){
+        const p = monitorInfo(b.startISO, b.endISO);
 
-/* ===== Background Floating Hearts (BIGGER) ===== */
-function createFloatingHeart(){
-  // don't spawn if transparent background is active
-  if(document.body.classList.contains("transparent-bg")) return;
+        // table row
+        const tr = document.createElement("tr");
+        tr.innerHTML = `
+          <td class="nowrap"><b>${escapeHtml(b.bookingId)}</b></td>
+          <td>
+            <div><b>${escapeHtml(b.client)}</b></div>
+            <div style="color:var(--muted); font-size:12px;">${escapeHtml(b.contact || "")}</div>
+          </td>
+          <td>${escapeHtml(b.unit)}</td>
+          <td class="nowrap">${formatDT(b.startISO)}</td>
+          <td class="nowrap">${formatDT(b.endISO)}</td>
+          <td>
+            <div class="barWrap">
+              <div class="barTop">
+                <span class="nowrap">${escapeHtml(p.range)}</span>
+                <span class="nowrap">${Math.round(p.pct)}%</span>
+              </div>
+              <div class="barTrack" title="${escapeHtml(p.nowLabel)}">
+                <div class="barFill" style="width:${p.pct}%;"></div>
+              </div>
+              <div class="barMarkers"><span>Start</span><span>Now</span><span>End</span></div>
+              <div class="barNote">${escapeHtml(p.nowLabel)} • ${escapeHtml(p.note)}</div>
+            </div>
+          </td>
+          <td><span class="tag ${statusTagClass(b.status)}">${escapeHtml(b.status)}</span></td>
+          <td>
+            <div>${escapeHtml(b.payment || "—")}</div>
+            <div style="color:var(--muted); font-size:12px;">${b.price ? ("₱" + Number(b.price).toLocaleString()) : ""}</div>
+          </td>
+          <td class="nowrap">
+            <div class="miniBtns">
+              <button type="button" onclick="editBooking('${b.id}')">Edit</button>
+              <button type="button" class="danger" onclick="deleteBooking('${b.id}')">Delete</button>
+            </div>
+          </td>
+        `;
+        tbody.appendChild(tr);
 
-  const heart = document.createElement("div");
-  heart.classList.add("floating-heart");
-  heart.innerText = Math.random() < 0.5 ? "💖" : "💗";
+        // mobile card
+        const c = document.createElement("div");
+        c.className = "bookingCard";
+        c.innerHTML = `
+          <div class="bookingCardTop">
+            <div>
+              <div class="title">${escapeHtml(b.client)} <span class="muted" style="font-weight:700">• ${escapeHtml(b.bookingId)}</span></div>
+              <div class="sub">${escapeHtml(b.unit)} ${b.contact ? ("• " + escapeHtml(b.contact)) : ""}</div>
+            </div>
+            <span class="tag ${statusTagClass(b.status)}">${escapeHtml(b.status)}</span>
+          </div>
 
-  const size = Math.random() * 26 + 34;
-  const left = Math.random() * 100;
-  const duration = Math.random() * 4 + 7;
+          <div class="kv">
+            <div><span class="muted">Start</span><br><b>${formatDT(b.startISO)}</b></div>
+            <div><span class="muted">End</span><br><b>${formatDT(b.endISO)}</b></div>
+            <div><span class="muted">Payment</span><br><b>${escapeHtml(b.payment || "—")}</b></div>
+            <div><span class="muted">Price</span><br><b>${b.price ? ("₱" + Number(b.price).toLocaleString()) : "—"}</b></div>
+          </div>
 
-  heart.style.fontSize = size + "px";
-  heart.style.left = left + "vw";
-  heart.style.animationDuration = duration + "s";
+          <div class="barWrap" style="min-width:unset;">
+            <div class="barTop">
+              <span class="nowrap">${escapeHtml(p.range)}</span>
+              <span class="nowrap">${Math.round(p.pct)}%</span>
+            </div>
+            <div class="barTrack" title="${escapeHtml(p.nowLabel)}">
+              <div class="barFill" style="width:${p.pct}%;"></div>
+            </div>
+            <div class="barMarkers"><span>Start</span><span>Now</span><span>End</span></div>
+            <div class="barNote">${escapeHtml(p.nowLabel)} • ${escapeHtml(p.note)}</div>
+          </div>
 
-  heartBg.appendChild(heart);
-  setTimeout(()=> heart.remove(), duration * 1000);
-}
-setInterval(createFloatingHeart, 320);
-</script>
+          <div class="inlineRow">
+            <button type="button" class="ghost" onclick="editBooking('${b.id}')">Edit</button>
+            <button type="button" class="danger" onclick="deleteBooking('${b.id}')">Delete</button>
+          </div>
+        `;
+        cards.appendChild(c);
+      }
+    }
 
+    function renderClock(){
+      const now = new Date();
+      $("nowClock").textContent = "Now: " + formatDT(now.toISOString());
+    }
+
+    function renderAll(){
+      renderClock();
+      renderBookings();
+      updateEndsInline();
+    }
+
+    // ---- edit/delete
+    window.editBooking = function(id){
+      const b = state.bookings.find(x => x.id === id);
+      if(!b) return;
+
+      state.editingId = id;
+      $("formTitle").textContent = "Edit Booking";
+      $("saveBtn").textContent = "Update";
+
+      client.value = b.client || "";
+      contact.value = b.contact || "";
+      unit.value = b.unit || "";
+
+      const s = new Date(b.startISO);
+      if(!isNaN(s)){
+        startDate.value = s.toISOString().slice(0,10);
+        startTime.value = pad2(s.getHours()) + ":" + pad2(s.getMinutes());
+      }
+      hours.value = b.hours ?? "";
+
+      status.value = b.status || "Reserved";
+      payment.value = b.payment || "Unpaid";
+      price.value = b.price ?? "";
+      bookingId.value = b.bookingId || "";
+      notes.value = b.notes || "";
+
+      updateEndsInline();
+      saveDraft();
+
+      // go to dashboard to edit (simple)
+      location.hash = "#/dashboard";
+      showToast("Editing ✏️");
+    }
+
+    window.deleteBooking = function(id){
+      const b = state.bookings.find(x => x.id === id);
+      if(!b) return;
+      if(!confirm(`Delete booking ${b.bookingId}?`)) return;
+
+      state.bookings = state.bookings.filter(x => x.id !== id);
+      persist();
+      renderAll();
+      if(state.editingId === id) resetForm();
+    }
+
+    function clearAll(){
+      if(!confirm("This will delete ALL saved bookings on this device/browser. Continue?")) return;
+      state.bookings = [];
+      persist();
+      renderAll();
+      resetForm();
+    }
+
+    // ---- CSV export/import
+    function toCSV(rows){
+      const headers = ["bookingId","client","contact","unit","startISO","endISO","hours","status","payment","price","notes","updatedAtISO"];
+      const esc = (v) => {
+        const s = String(v ?? "");
+        if(/[,"\n]/.test(s)) return `"${s.replaceAll('"','""')}"`;
+        return s;
+      };
+      const lines = [headers.join(",")];
+      for(const r of rows){
+        lines.push(headers.map(h => esc(r[h])).join(","));
+      }
+      return lines.join("\n");
+    }
+    function download(filename, text){
+      const blob = new Blob([text], { type: "text/csv;charset=utf-8" });
+      const a = document.createElement("a");
+      a.href = URL.createObjectURL(blob);
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      setTimeout(() => URL.revokeObjectURL(a.href), 500);
+    }
+    function parseCSV(text){
+      const rows = [];
+      let i=0, field="", row=[], inQuotes=false;
+
+      function pushField(){ row.push(field); field=""; }
+      function pushRow(){ rows.push(row); row=[]; }
+
+      while(i < text.length){
+        const c = text[i];
+        if(inQuotes){
+          if(c === '"'){
+            if(text[i+1] === '"'){ field += '"'; i += 2; continue; }
+            inQuotes = false; i++; continue;
+          }
+          field += c; i++; continue;
+        } else {
+          if(c === '"'){ inQuotes = true; i++; continue; }
+          if(c === ","){ pushField(); i++; continue; }
+          if(c === "\n"){ pushField(); pushRow(); i++; continue; }
+          if(c === "\r"){ i++; continue; }
+          field += c; i++; continue;
+        }
+      }
+      pushField();
+      if(row.length) pushRow();
+
+      const headers = rows.shift();
+      if(!headers) return [];
+
+      return rows
+        .filter(r => r.some(v => String(v).trim() !== ""))
+        .map(r => {
+          const obj = {};
+          headers.forEach((h, idx) => obj[h] = r[idx] ?? "");
+          obj.hours = obj.hours ? Number(obj.hours) : null;
+          obj.price = obj.price ? Number(obj.price) : null;
+          obj.id = crypto.randomUUID?.() || (Date.now()+"_"+Math.random());
+          return obj;
+        });
+    }
+    function exportCSV(){
+      const csv = toCSV(state.bookings);
+      const d = new Date();
+      const fname = `digicam-bookings-${d.getFullYear()}-${pad2(d.getMonth()+1)}-${pad2(d.getDate())}.csv`;
+      download(fname, csv);
+      showToast("Exported CSV ✅");
+    }
+    async function importCSVFile(file){
+      const text = await file.text();
+      const imported = parseCSV(text);
+
+      if(imported.length === 0){
+        alert("No rows found in CSV.");
+        return;
+      }
+
+      const map = new Map(state.bookings.map(b => [b.bookingId, b]));
+      for(const r of imported){
+        const bid = (r.bookingId || "").trim();
+        if(!bid) continue;
+        const existing = map.get(bid);
+        if(existing){
+          map.set(bid, { ...existing, ...r, id: existing.id });
+        } else {
+          map.set(bid, { ...r, id: crypto.randomUUID?.() || (Date.now()+"_"+Math.random()) });
+        }
+      }
+
+      state.bookings = Array.from(map.values());
+      persist();
+      renderAll();
+      showToast("Imported ✅");
+    }
+
+    // ---- router
+    function setActiveTab(tab){
+      $("tabDashboard").classList.toggle("active", tab === "dashboard");
+      $("tabBookings").classList.toggle("active", tab === "bookings");
+      $("pageDashboard").classList.toggle("active", tab === "dashboard");
+      $("pageBookings").classList.toggle("active", tab === "bookings");
+    }
+
+    function route(){
+      const hash = location.hash || "#/dashboard";
+      const tab = hash.includes("bookings") ? "bookings" : "dashboard";
+      setActiveTab(tab);
+      renderAll();
+    }
+
+    // ---- events
+    $("saveBtn").addEventListener("click", upsertBooking);
+    $("resetBtn").addEventListener("click", () => { resetForm(); showToast("New booking ✅"); });
+    $("clearAllBtn").addEventListener("click", clearAll);
+
+    ["input","change"].forEach(evt => {
+      $("search").addEventListener(evt, renderBookings);
+      $("filterStatus").addEventListener(evt, renderBookings);
+      $("sortBy").addEventListener(evt, renderBookings);
+    });
+
+    ["input","change"].forEach(evt => {
+      startDate.addEventListener(evt, () => { updateEndsInline(); saveDraft(); });
+      startTime.addEventListener(evt, () => { updateEndsInline(); saveDraft(); });
+      hours.addEventListener(evt, () => { updateEndsInline(); saveDraft(); });
+      client.addEventListener(evt, saveDraft);
+      contact.addEventListener(evt, saveDraft);
+      unit.addEventListener(evt, saveDraft);
+      status.addEventListener(evt, saveDraft);
+      payment.addEventListener(evt, saveDraft);
+      price.addEventListener(evt, saveDraft);
+      bookingId.addEventListener(evt, saveDraft);
+      notes.addEventListener(evt, saveDraft);
+    });
+
+    $("exportBtn").addEventListener("click", exportCSV);
+    $("importBtn").addEventListener("click", () => $("importFile").click());
+    $("importFile").addEventListener("change", async (e) => {
+      const file = e.target.files && e.target.files[0];
+      if(!file) return;
+      await importCSVFile(file);
+      e.target.value = "";
+    });
+
+    window.addEventListener("hashchange", route);
+
+    // keep monitor bars accurate
+    setInterval(() => {
+      if(state.bookings.length) renderBookings();
+      renderClock();
+    }, 60 * 1000);
+
+    // ---- init
+    load();
+    setNowDefaults();
+    updateEndsInline();
+    loadDraft();
+    route();
+  </script>
 </body>
 </html>
