@@ -333,7 +333,7 @@ button{
 <div class="heart-background"></div>
 
 <div class="container">
-  <h1>Catch 3 Hearts to Unlock Love 💘</h1>
+  <h1>Catch 3 Hearts💘</h1>
   <p class="subtitle">A tiny game for my favorite person ❤️</p>
 
   <div class="arena" id="arena">
@@ -490,21 +490,23 @@ function startTimer(){
   }, 1000);
 }
 
-/* ===== What happens when time is up ===== */
+/* ===== When time is up ===== */
 function onTimeUp(){
-  // stop game
+  // stop game completely
   gameStarted = false;
   clearInterval(spawnInterval);
   clearInterval(timerInterval);
 
-  // if score not enough: NO stops moving, message pops out, background becomes transparent
+  // freeze NO button
+  noDodgeEnabled = false;
+
+  // if score not enough: show message and transparent bg
   if(score < TARGET){
-    noDodgeEnabled = false;               // NO button won't move anymore
-    document.body.classList.add("transparent-bg"); // background transparent
-    modal.classList.add("show");          // show your message
+    document.body.classList.add("transparent-bg");
+    modal.classList.add("show");
   }
 
-  // show restart overlay
+  // show restart overlay (no auto reload)
   timeoutOverlay.classList.add("show");
 }
 
@@ -522,6 +524,12 @@ noBtn.addEventListener("click", dodgeNo);
 /* ===== YES Button ===== */
 yesBtn.addEventListener("click", ()=>{
   if(!unlocked) return;
+
+  // stop game completely so there's NO time limit while reading
+  gameStarted = false;
+  clearInterval(spawnInterval);
+  clearInterval(timerInterval);
+  noDodgeEnabled = false;
 
   modal.classList.add("show");
 
@@ -566,7 +574,7 @@ modal.addEventListener("click", (e)=>{
 
 /* ===== Start / Restart ===== */
 function resetGame(){
-  // restore background + behavior
+  // restore background + overlays
   document.body.classList.remove("transparent-bg");
   modal.classList.remove("show");
   timeoutOverlay.classList.remove("show");
@@ -605,11 +613,14 @@ restartBtn.addEventListener("click", ()=>{
 
 /* ===== Background Floating Hearts (BIGGER) ===== */
 function createFloatingHeart(){
+  // don't spawn if transparent background is active
+  if(document.body.classList.contains("transparent-bg")) return;
+
   const heart = document.createElement("div");
   heart.classList.add("floating-heart");
   heart.innerText = Math.random() < 0.5 ? "💖" : "💗";
 
-  const size = Math.random() * 26 + 34;   // bigger
+  const size = Math.random() * 26 + 34;
   const left = Math.random() * 100;
   const duration = Math.random() * 4 + 7;
 
@@ -625,4 +636,3 @@ setInterval(createFloatingHeart, 320);
 
 </body>
 </html>
-
